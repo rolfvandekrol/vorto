@@ -1,0 +1,9 @@
+name = Pruvo
+description = Pruvo
+
+engine = phptemplate
+
+core = 7.x
+php = 5.2
+
+stylesheets[all][] = scss/style.scss

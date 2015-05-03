@@ -1,0 +1,206 @@
+<?php
+
+function vorto_kw_manifests_info() {
+  $manifests = array();
+
+  $manifests['base_settings'] = array(
+    'callback' => 'vorto_base_settings',
+    'dependencies' => array(
+      array('module' => 'homepage', 'name' => 'create_page'),
+    ),
+  );
+
+  $manifests['theme'] = array(
+    'callback' => 'vorto_manifest_theme',
+  );
+
+  $manifests['administrator_role'] = array(
+    'callback' => 'vorto_manifest_administrator_role',
+  );
+
+  $manifests['language'] = array(
+    'callback' => 'vorto_manifest_language',
+  );
+
+  return $manifests;
+}
+
+function vorto_base_settings() {
+  // Some default settings
+  variable_set('site_name', 'Vorto');
+  variable_set('site_mail', 'rolf@hoppinger.com');
+  variable_set('site_frontpage', 'node/' . kw_itemnames_item_id('node', 'homepage'));
+
+  // Turn off Help block.
+  db_update('block')
+    ->fields(array('region' => -1))
+    ->condition('delta', 'help')
+    ->execute();
+
+  // Allow visitor account creation, but with administrative approval.
+  variable_set('user_register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL);
+
+  // Enable default permissions for system roles.
+  user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array('access content'));
+  user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array('access content'));
+}
+
+function vorto_manifest_theme() {
+  $default_theme = 'pruvo';
+  $admin_theme = 'klara';
+
+  $enabled_themes = array($default_theme, $admin_theme);
+  _vorto_resolve_theme_dependencies($enabled_themes);
+
+  variable_set('theme_default', $default_theme);
+  variable_set('admin_theme', $admin_theme);
+  variable_set('node_admin_theme', TRUE);
+
+  _vorto_setup_theme_blocks($default_theme);
+  _vorto_setup_theme_blocks($admin_theme);
+}
+
+function _vorto_resolve_theme_dependencies($enable) {
+  theme_enable($enable);
+
+  $disable = array();
+  foreach (list_themes() as $key => $info) {
+    if (!empty($info->status) && !in_array($key, $enable)) {
+      $disable[] = $key;
+    }
+  }
+
+  if ($disable) {
+    theme_disable($disable);
+  }
+}
+
+function _vorto_setup_theme_blocks($theme_name) {
+  $values = array(
+    array(
+      'module' => 'system',
+      'delta' => 'main',
+      'theme' => $theme_name,
+      'status' => 1,
+      'weight' => 0,
+      'region' => 'content',
+      'pages' => '',
+      'cache' => -1,
+    ),
+  );
+
+  $key_keys = array('module', 'delta', 'theme');
+  foreach ($values as $record) {
+    $key = array();
+    foreach ($key_keys as $key_key) {
+      $key[$key_key] = $record[$key_key];
+      unset($record[$key_key]);
+    }
+
+    $query = db_merge('block')
+      ->key($key)
+      ->fields($record)
+      ->execute();
+  }
+}
+
+function _vorto_ensure_user_role($role) {
+  $role = kw_itemnames_ensure(
+    'user_role', 
+    'role-' . $role,
+    array(
+      'name' => $role,
+    ),
+    array()
+  );
+
+  return $role;
+}
+
+function vorto_manifest_administrator_role() {
+  $role = _vorto_ensure_user_role('administrator');
+  $permissions = array(
+    'administer nodes',
+    'access content overview',
+    'access content',
+    'view own unpublished content',
+    'view revisions',
+    'revert revisions',
+    'delete revisions',
+    'access administration menu',
+    'access administration pages',
+  );
+  user_role_grant_permissions($role->rid, $permissions);
+}
+
+function vorto_manifest_language() {
+  $languages = language_list();
+
+  $enabled_languages = array('nl', 'en');
+  foreach ($languages as $language) {
+    if (!in_array($language->language, $enabled_languages)) {
+      _vorto_remove_language($language->language);
+    }
+  }
+
+  foreach ($enabled_languages as $langcode) {
+    if (!isset($languages[$langcode])) {
+      locale_add_language($langcode);
+    }
+  }
+
+  $languages = language_list();
+  variable_set('language_default', $languages[$enabled_languages[0]]);
+}
+
+function _vorto_remove_language($langcode) {
+  // Remove translations first.
+  db_delete('locales_target')
+    ->condition('language', $langcode)
+    ->execute();
+  cache_clear_all('locale:' . $langcode, 'cache');
+  // With no translations, this removes existing JavaScript translations file.
+  _locale_rebuild_js($langcode);
+  // Remove the language.
+  db_delete('languages')
+    ->condition('language', $langcode)
+    ->execute();
+  db_update('node')
+    ->fields(array('language' => ''))
+    ->condition('language', $langcode)
+    ->execute();
+
+  _vorto_update_language_count();
+  module_invoke_all('multilingual_settings_changed');
+
+  cache_clear_all('*', 'cache_page', TRUE);
+  drupal_static_reset('language_list');
+}
+
+function _vorto_update_language_count() {
+  $enabled_languages = db_select('languages')
+    ->condition('enabled', 1)
+    ->fields('languages')
+    ->execute()
+    ->rowCount();
+  variable_set('language_count', $enabled_languages);
+}
+
+function vorto_manifest_fixtures() {
+  kw_itemnames_ensure(
+    'node', 
+    'page-disclaimer', 
+    array(
+      'uid' => 1,
+    ),
+    array(
+      'type' => 'page', 
+      'language' => LANGUAGE_NONE,
+      'title' => 'Disclaimer', 
+      'path' => array(
+        'alias' => 'disclaimer',
+        'pathauto' => FALSE
+      ),
+    )
+  );
+}

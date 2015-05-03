@@ -1,0 +1,16 @@
+name = Vorto
+description = Install profile for Vorto
+core = 7.x
+
+dependencies[] = block
+dependencies[] = dblog
+dependencies[] = menu
+dependencies[] = locale
+
+dependencies[] = kw_manifests
+dependencies[] = features
+
+env_dependencies[development][] = field_ui
+env_dependencies[development][] = strongarm
+
+files[] = vorto.profile

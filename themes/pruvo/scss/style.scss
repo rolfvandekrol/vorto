@@ -5,6 +5,89 @@ $color-12: #A2E8BD;
 $color-21: #8953BA;
 $color-22: #C1A2E7;
 
+$color-11-dark: darken($color-11, 30);
+
+@import url(http://fonts.googleapis.com/css?family=Neuton:400,700,400italic|Montserrat:700&subset=latin,latin-ext);
+
+@mixin clearfix() {
+  &:before,
+  &:after {
+    content: "";
+    display: table;
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
 html, body {
   background: $color-0;
+  color: $color-11-dark;
+  margin: 0;
+  padding: 0;
+  font-family: 'Neuton', serif;
+  font-size: 20px;
+}
+
+a {
+  color: $color-11-dark;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+html, body, #page-wrapper, #page {
+  height: 100%;
+  width: 100%;
+}
+
+#page {
+  display: table;
+}
+
+#header, #navigation, #breadcrumb, #main-wrapper, #footer {
+  display: table-row;
+  height: 1px;
+}
+
+#main-wrapper {
+  height: 100%;
+}
+
+.section {
+  width: 100%;
+  padding: 20px 10px;
+  margin: 0 auto;
+  max-width: 960px;
+  @include clearfix;
+}
+
+#header {
+  background: $color-12;
+}
+
+#footer {
+  background: $color-22;
+  text-align: center;
+}
+
+#logo {
+  float: left;
+  margin-right: 20px;
+}
+
+#name-and-slogan {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 50px;
+  line-height: 75px;
+
+  a {
+    text-decoration: none;
+  }
 }

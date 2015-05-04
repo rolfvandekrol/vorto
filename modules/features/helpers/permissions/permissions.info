@@ -1,0 +1,7 @@
+name = Permissions
+package = Vorto
+
+core = 7.x
+
+dependencies[] = kw_itemnames_user_role
+dependencies[] = user

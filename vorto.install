@@ -5,9 +5,6 @@ function vorto_kw_manifests_info() {
 
   $manifests['base_settings'] = array(
     'callback' => 'vorto_base_settings',
-    'dependencies' => array(
-      array('module' => 'homepage', 'name' => 'create_page'),
-    ),
   );
 
   $manifests['theme'] = array(
@@ -30,12 +27,6 @@ function vorto_base_settings() {
   variable_set('site_name', 'Vorto');
   variable_set('site_mail', 'rolf@hoppinger.com');
   variable_set('site_frontpage', 'node/' . kw_itemnames_item_id('node', 'homepage'));
-
-  // Turn off Help block.
-  db_update('block')
-    ->fields(array('region' => -1))
-    ->condition('delta', 'help')
-    ->execute();
 
   // Allow visitor account creation, but with administrative approval.
   variable_set('user_register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL);
@@ -102,35 +93,26 @@ function _vorto_setup_theme_blocks($theme_name) {
       ->fields($record)
       ->execute();
   }
-}
 
-function _vorto_ensure_user_role($role) {
-  $role = kw_itemnames_ensure(
-    'user_role', 
-    'role-' . $role,
-    array(
-      'name' => $role,
-    ),
-    array()
-  );
-
-  return $role;
+    // Turn off Help block.
+  db_update('block')
+    ->fields(array('region' => -1))
+    ->condition('delta', 'help')
+    ->condition('theme', $theme_name)
+    ->execute();
 }
 
 function vorto_manifest_administrator_role() {
-  $role = _vorto_ensure_user_role('administrator');
-  $permissions = array(
+  permissions_ensure_permissions('administrator', array(
     'administer nodes',
     'access content overview',
     'access content',
-    'view own unpublished content',
+    # 'view own unpublished content',
     'view revisions',
     'revert revisions',
     'delete revisions',
-    'access administration menu',
     'access administration pages',
-  );
-  user_role_grant_permissions($role->rid, $permissions);
+  ));
 }
 
 function vorto_manifest_language() {

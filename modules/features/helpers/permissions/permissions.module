@@ -1,0 +1,14 @@
+<?php
+
+function permissions_ensure_permissions($role, $perms) {
+  $role = kw_itemnames_ensure(
+    'user_role', 
+    'role-' . $role,
+    array(
+      'name' => $role,
+    ),
+    array()
+  );
+
+  user_role_grant_permissions($role->rid, $perms);
+}

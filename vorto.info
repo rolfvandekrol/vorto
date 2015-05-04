@@ -10,6 +10,8 @@ dependencies[] = locale
 dependencies[] = kw_manifests
 dependencies[] = features
 
+dependencies[] = permissions
+
 env_dependencies[development][] = field_ui
 env_dependencies[development][] = strongarm
 

@@ -1,0 +1,4 @@
+name = Pages
+core = 7.x
+
+package = "Vorto Helpers"

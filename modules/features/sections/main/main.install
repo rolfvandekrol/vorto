@@ -1,0 +1,110 @@
+<?php
+
+function main_kw_manifests_info() {
+  $manifests = array();
+
+  $manifests['pages'] = array(
+    'callback' => 'main_manifest_pages'
+  );
+
+  return $manifests;
+}
+
+
+function main_manifest_pages() {
+  $node = kw_itemnames_ensure(
+    'node', 
+    'main-homepage', 
+    array(
+      'uid' => 1,
+    ),
+    array(
+      'type' => 'page', 
+      'language' => LANGUAGE_NONE,
+      'title' => 'Vorto', 
+      'path' => array(
+        'alias' => 'home',
+        'pathauto' => FALSE
+      ),
+    )
+  );
+
+  kw_itemnames_ensure(
+    'menu_link', 
+    'main-menu-homepage',
+    array(
+      'menu_name' => 'main-menu', 
+      'plid' => 0,
+      'link_path' => '<front>',
+      'module' => 'menu',
+      'hidden' => 0,
+      'weight' => 10,
+      'link_title' => 'Home',
+    ),
+    array()
+  );
+
+  $node = kw_itemnames_ensure(
+    'node', 
+    'main-news', 
+    array(
+      'uid' => 1,
+    ),
+    array(
+      'type' => 'page', 
+      'language' => LANGUAGE_NONE,
+      'title' => 'Nieuws', 
+      'path' => array(
+        'alias' => 'nieuws',
+        'pathauto' => FALSE
+      ),
+    )
+  );
+
+  kw_itemnames_ensure(
+    'menu_link', 
+    'main-menu-news',
+    array(
+      'menu_name' => 'main-menu', 
+      'plid' => 0,
+      'link_path' => 'node/' . $node->nid,
+      'module' => 'menu',
+      'hidden' => 0,
+      'weight' => 20,
+      'link_title' => 'Nieuws',
+    ),
+    array()
+  );
+
+  $node = kw_itemnames_ensure(
+    'node', 
+    'main-about', 
+    array(
+      'uid' => 1,
+    ),
+    array(
+      'type' => 'page', 
+      'language' => LANGUAGE_NONE,
+      'title' => 'Over ons', 
+      'path' => array(
+        'alias' => 'nieuws',
+        'pathauto' => FALSE
+      ),
+    )
+  );
+
+  kw_itemnames_ensure(
+    'menu_link', 
+    'main-menu-about',
+    array(
+      'menu_name' => 'main-menu', 
+      'plid' => 0,
+      'link_path' => 'node/' . $node->nid,
+      'module' => 'menu',
+      'hidden' => 0,
+      'weight' => 30,
+      'link_title' => 'Over ons',
+    ),
+    array()
+  );
+}

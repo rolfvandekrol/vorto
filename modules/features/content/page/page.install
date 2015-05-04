@@ -1,0 +1,25 @@
+<?php
+
+function page_kw_manifests_info() {
+  $manifests = array();
+
+  $manifests['permissions'] = array(
+    'callback' => 'page_manifest_permissions'
+  );
+
+  $manifests['fields'] = array(
+    'callback' => 'page_manifest_fields'
+  );
+
+  return $manifests;
+}
+
+function page_manifest_fields() {
+  node_types_rebuild();
+  variable_set('node_submitted_page', FALSE);
+  //pages_add_content_field('node', 'page');
+}
+
+function page_manifest_permissions() {
+  permissions_ensure_permissions('administrator', permissions_full_node_permissions('page'));
+}

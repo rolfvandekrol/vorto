@@ -5,6 +5,9 @@ function vorto_kw_manifests_info() {
 
   $manifests['base_settings'] = array(
     'callback' => 'vorto_base_settings',
+    'dependencies' => array(
+      array('module' => 'main', 'name' => 'pages')
+    )
   );
 
   $manifests['theme'] = array(
@@ -26,7 +29,7 @@ function vorto_base_settings() {
   // Some default settings
   variable_set('site_name', 'Vorto');
   variable_set('site_mail', 'rolf@hoppinger.com');
-  variable_set('site_frontpage', 'node/' . kw_itemnames_item_id('node', 'homepage'));
+  variable_set('site_frontpage', 'node/' . kw_itemnames_item_id('node', 'main-homepage'));
 
   // Allow visitor account creation, but with administrative approval.
   variable_set('user_register', USER_REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL);

@@ -1,0 +1,7 @@
+<?php
+
+function main_node_page_main_homepage_view($node, $view_mode, $langcode) {
+  if ($view_mode == 'full') {
+    drupal_set_title('');
+  }
+}

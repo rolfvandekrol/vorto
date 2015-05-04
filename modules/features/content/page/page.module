@@ -1,0 +1,21 @@
+<?php
+
+function page_node_info() {
+  return array(
+    'page' => array(
+      'name' => 'Pagina',
+      'base' => 'node_content',
+      'description' => 'Een pagina.',
+      'title_label' => 'Titel',
+      'locked' => TRUE,
+    ),
+  );
+}
+
+function page_node_page_view($node, $view_mode, $langcode) {
+  $name = kw_itemnames_name('node', $node);
+  if ($name) {
+    $hook = 'node_page_' . strtr($name, '-', '_') . '_view';
+    module_invoke_all($hook, $node, $view_mode, $langcode);
+  }
+}

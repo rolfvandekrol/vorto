@@ -13,6 +13,8 @@ dependencies[] = features
 dependencies[] = hoppass
 
 dependencies[] = permissions
+dependencies[] = page
+dependencies[] = main
 
 env_dependencies[development][] = field_ui
 env_dependencies[development][] = strongarm

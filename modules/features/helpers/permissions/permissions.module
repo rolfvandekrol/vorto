@@ -1,14 +1,36 @@
 <?php
 
-function permissions_ensure_permissions($role, $perms) {
-  $role = kw_itemnames_ensure(
-    'user_role', 
-    'role-' . $role,
-    array(
-      'name' => $role,
-    ),
-    array()
-  );
+function permissions_ensure_permissions($role, $perms = array()) {
+  if (is_numeric($role)) {
+    $rid = $role;
+  } else {
+    $role = kw_itemnames_ensure(
+      'user_role', 
+      'role-' . $role,
+      array(
+        'name' => $role,
+      ),
+      array()
+    );
+    $rid = $role->rid;
+  }
 
-  user_role_grant_permissions($role->rid, $perms);
+  if ($perms) {
+    user_role_grant_permissions($rid, $perms);
+  }
+}
+
+function permissions_full_node_permissions($node_type) {
+  $permissions = array(
+    'create',
+    'edit own',
+    'edit any',
+    'delete own',
+    'delete any',
+  );
+  foreach ($permissions as &$permission) {
+    $permission .= ' ' . $node_type . ' content';
+  }
+
+  return $permissions;
 }

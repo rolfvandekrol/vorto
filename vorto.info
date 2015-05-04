@@ -10,6 +10,8 @@ dependencies[] = locale
 dependencies[] = kw_manifests
 dependencies[] = features
 
+dependencies[] = hoppass
+
 dependencies[] = permissions
 
 env_dependencies[development][] = field_ui

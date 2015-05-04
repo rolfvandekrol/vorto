@@ -16,6 +16,8 @@ dependencies[] = permissions
 dependencies[] = page
 dependencies[] = main
 
+dependencies[] = trink
+
 env_dependencies[development][] = field_ui
 env_dependencies[development][] = strongarm
 

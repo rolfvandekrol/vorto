@@ -1,0 +1,13 @@
+html {
+  margin-top: 32px !important;
+}
+
+.trink {
+  position: fixed;
+  height: 32px;
+  left: 0;
+  width: 100%;
+  right: 0;
+  top: 0;
+  background: #23282d;
+}

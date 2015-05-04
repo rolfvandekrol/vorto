@@ -1,0 +1,46 @@
+<?php
+
+function trink_permission() {
+  return array(
+    'access trink' => array(
+      'title' => t('Access Trink'),
+      'description' => t('Display the administration menu at the top of each page.'),
+    ),
+  );
+}
+
+function trink_page_build(&$page) {
+  if (!user_access('access trink')) {
+    return;
+  }
+
+  if (strpos($_GET['q'], 'js/') === 0) {
+    return;
+  }
+
+  $page['page_bottom']['trink'] = trink_build();
+}
+
+function trink_theme() {
+  $registry = array();
+
+  $registry['trink'] = array(
+    'template' => 'trink',
+    'variables' => array(),
+  );
+
+  return $registry;
+}
+
+function trink_build() {
+  $path = drupal_get_path('module', 'trink');
+
+  return array(
+    '#theme' => 'trink',
+    '#attached' => array(
+      'css' => array(
+        $path . '/trink.css',
+      )
+    ),
+  );
+}
